@@ -1,0 +1,56 @@
+### Listar usuários
+GET localhost:8080/api/orders
+
+
+###Criar Pedido
+POST localhost:8080/api/orders
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "itens": []
+}
+
+###Atualizar Itens Pedido
+PATCH localhost:8080/api/orders/1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "itens": [
+    {
+      "id": 2,
+      "name": "Hemogenin",
+      "preco": 29.0
+    },
+    {
+    "id": 4,
+    "name": "GH",
+    "preco": 348.0
+  }
+  ]
+}
+
+
+
+### Lista o usuário 2
+GET localhost:8080/api/orders/2
+
+
+### Login com admin
+POST localhost:8080/api/users/login
+Content-Type: application/json
+
+{
+  "email": "admin@authserver.com",
+  "password": "admin"
+}
+> {%
+    client.global.set("token", response.body.token)
+    client.global.set("id", response.body.user.id)
+%}
+
+### Exclui o usuário
+DELETE localhost:8080/api/orders/1
+Authorization: Bearer {{token}}
+

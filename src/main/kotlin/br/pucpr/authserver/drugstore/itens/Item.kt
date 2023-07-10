@@ -2,16 +2,15 @@ package br.pucpr.authserver.drugstore.itens
 
 import jakarta.persistence.*
 
-
 @Entity
-data class Item(
+@Table(name = "TblItem")
+class Item(
+    @Id @GeneratedValue
+    var id: Long? = null,
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long = 0,
+    @Column
+    var name: String = "",
 
-    @Column(nullable = false)
-    val nome: String,
-
-    @Column(nullable = false)
-    val preco: Double
+    @Column
+    var preco: Float = 0.0F
 )

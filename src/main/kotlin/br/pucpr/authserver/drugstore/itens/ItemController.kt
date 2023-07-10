@@ -1,11 +1,17 @@
 package br.pucpr.authserver.drugstore.itens
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement
+import jakarta.transaction.Transactional
+import org.springframework.http.ResponseEntity
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/itens")
 class ItemController(val itemService: ItemService) {
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
+    @SecurityRequirement(name = "AuthServer")
     fun criarItem(@RequestBody item: Item): Item {
         return itemService.criarItem(item)
     }
@@ -20,12 +26,18 @@ class ItemController(val itemService: ItemService) {
         return itemService.obterTodosItens()
     }
 
-    @PutMapping
-    fun atualizarItem(@RequestBody item: Item): Item {
-        return itemService.atualizarItem(item)
-    }
+    @Transactional
+    @PatchMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    fun atualizarItem(@RequestBody item: ItemRequest, @PathVariable id: Long) =
+        itemService.atualizarItem(item, id)
+            ?.let { ResponseEntity.ok(it) }
+            ?: ResponseEntity.notFound().build()
+
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    @SecurityRequirement(name = "AuthServer")
     fun deletarItem(@PathVariable id: Long) {
         itemService.deletarItem(id)
     }

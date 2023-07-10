@@ -1,14 +1,19 @@
 package br.pucpr.authserver.Orders
-import jakarta.persistence.Entity
-import jakarta.persistence.GeneratedValue
-import jakarta.persistence.GenerationType
-import jakarta.persistence.Id
+import br.pucpr.authserver.drugstore.itens.Item
+import jakarta.persistence.*
 
 @Entity
-data class Pedido(
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long = 0,
-    val nome: String,
-    val preco: Double
+@Table(name = "TblOrder")
+class Order(
+    @Id @GeneratedValue
+    var id: Long? = null,
+
+    @ManyToMany
+    @JoinTable(
+        name = "OrderItem",
+        joinColumns = [JoinColumn(name = "idOrder")],
+        inverseJoinColumns = [JoinColumn(name = "idItem")]
+    )
+    var itens: MutableList<Item> = mutableListOf()
 )
 

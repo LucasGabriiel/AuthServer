@@ -1,23 +1,38 @@
 package br.pucpr.authserver.Orders
 
+import br.pucpr.authserver.exception.BadRequestException
+import br.pucpr.authserver.users.UsersService
+import jakarta.persistence.Id
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 
 @Service
-class PedidoService(private val pedidoRepository: PedidoRepository) {
-
-    fun obterPedidoPorId(id: Long): Pedido? {
-        return pedidoRepository.findById(id).orElse(null)
+class OrderService(private val orderRepository: OrderRepository) {
+    fun obeterpedidoporid(id: Long): Order? {
+        return orderRepository.findByIdOrNull(id)
+    }
+    fun criarpedido(request: OrderRequest): Order {
+        val order = Order(itens = request.itens.toMutableList())
+        return orderRepository.save(order)
     }
 
-    fun obterTodosPedidos(): List<Pedido> {
-        return pedidoRepository.findAll()
+    fun obterpedidos(): List<Order> {
+        return orderRepository.findAll()
     }
 
-    fun atualizarPedido(pedido: Pedido): Pedido {
-        return pedidoRepository.save(pedido)
+    fun delete(id: Long): Boolean {
+        val order = orderRepository.findByIdOrNull(id) ?: return false
+        orderRepository.delete(order)
+        return true
+    }
+    fun orderAtt(orderRequest: OrderRequest, id: Long): Order?{
+        val order = orderRepository.findByIdOrNull(id)
+        if (order != null) {
+            order.itens = orderRequest.itens.toMutableList()
+            return orderRepository.save(order)
+        }
+        return null
     }
 
-    fun deletarPedido(id: Long) {
-        pedidoRepository.deleteById(id)
-    }
+
 }

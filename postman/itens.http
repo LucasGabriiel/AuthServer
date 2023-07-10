@@ -1,0 +1,31 @@
+### Listar usuários
+GET localhost:8080/api/itens
+
+### Cadastra um usuário
+POST localhost:8080/api/itens
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "estanozolol",
+  "preco": 25.00
+
+}
+
+### Lista o usuário 2
+GET localhost:8080/api/itens/4
+
+### Update Itens
+PATCH localhost:8080/api/itens/1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "trembo",
+  "preco": 12
+}
+
+### Exclui o usuário
+DELETE localhost:8080/api/itens/2
+Authorization: Bearer {{token}}
+

@@ -1,28 +1,47 @@
-package br.pucpr.authserver.Orders
+package br.pucpr.authserver.drugstore.orders
 
+import br.pucpr.authserver.Orders.Order
+import br.pucpr.authserver.Orders.OrderRequest
+import br.pucpr.authserver.Orders.OrderService
+import io.swagger.v3.oas.annotations.security.SecurityRequirement
+import jakarta.transaction.Transactional
+import org.springframework.http.ResponseEntity
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 
 @RestController
-@RequestMapping("/pedidos")
-class PedidoController(private val pedidoService: PedidoService) {
+@RequestMapping("/orders")
+class ordercontroller(val orderService: OrderService) {
 
     @GetMapping("/{id}")
-    fun obterPedidoPorId(@PathVariable id: Long): Pedido? {
-        return pedidoService.obterPedidoPorId(id)
+    fun obterPedidoPorId(@PathVariable id: Long): ResponseEntity<Order> {
+        return orderService.obeterpedidoporid(id)
+            ?.let { ResponseEntity.ok(it) }
+            ?: ResponseEntity.notFound().build()
     }
 
-    @GetMapping
-    fun obterTodosPedidos(): List<Pedido> {
-        return pedidoService.obterTodosPedidos()
+    @PostMapping
+    @PreAuthorize("permitAll()")
+    fun criarpedido(@RequestBody pedidorequest: OrderRequest): Order{
+        return orderService.criarpedido(pedidorequest)
     }
 
-    @PutMapping
-    fun atualizarPedido(@RequestBody pedido: Pedido): Pedido {
-        return pedidoService.atualizarPedido(pedido)
-    }
+    @GetMapping()
+    fun listOrders() = orderService.obterpedidos()
 
     @DeleteMapping("/{id}")
-    fun deletarPedido(@PathVariable id: Long) {
-        pedidoService.deletarPedido(id)
-    }
+    @PreAuthorize("permitAll()")
+    fun delete(@PathVariable("id") id: Long): ResponseEntity<Void> =
+        if (orderService.delete(id)) ResponseEntity.ok().build()
+        else ResponseEntity.notFound().build()
+
+    @Transactional
+    @PatchMapping("/{id}")
+    @PreAuthorize("permitAll()")
+    fun atualizarPedido(@RequestBody orderRequest: OrderRequest, @PathVariable id: Long) =
+        orderService.orderAtt(orderRequest, id)
+            ?.let { ResponseEntity.ok(it) }
+            ?: ResponseEntity.notFound().build()
+
+
 }
