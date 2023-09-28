@@ -1,4 +1,4 @@
-### Listar usuários
+### Listar Pedidos
 GET localhost:8080/api/orders
 
 
@@ -33,7 +33,7 @@ Authorization: Bearer {{token}}
 
 
 
-### Lista o usuário 2
+### Lista o Pedidos 2
 GET localhost:8080/api/orders/2
 
 
